@@ -15,76 +15,91 @@ import javafx.scene.control.TextField;
 
 public class FXMLController {
 
-	private Libretto model;
+	/**ATTRIBUTO DI RIFERIMENTO AL MODEL:**/
+	private Libretto model; 
+	
+	
+    @FXML
+    private ResourceBundle resources;
 
-	@FXML
-	private ResourceBundle resources;
+    @FXML
+    private URL location;
 
-	@FXML
-	private URL location;
+    @FXML
+    private ComboBox<Integer> cmbPunteggi;
 
-	@FXML
-	private ComboBox<Integer> cmbPunti;
+    @FXML
+    private TextField txtNomeCorso;
 
-	@FXML
-	private TextField txtNome;
+    @FXML
+    private Label txtStatus;
 
-	@FXML
-	private Label txtStatus;
+    @FXML
+    private TextArea txtVoti;
 
-	@FXML
-	private TextArea txtVoti;
+    
+     
+    @FXML
+    void handleNuovoVoto(ActionEvent event) {
+    	
+    	/**1.ACQUISIZIONE E CONTROLLO DATI:**/
+    	
+    	String nome = txtNomeCorso.getText();
+    	Integer punteggio = cmbPunteggi.getValue(); //*
+    	
+    	//* 
+    	//dichiarato come Integer per permettere al programma
+    	//di assicurarsi che non sia null.
+    	
+    	if(nome.equals("") || punteggio==null) {
+    		txtStatus.setText("ERRORE: occorre inserire Nome Corso e Punteggio.");
+    		return; 
+    	}
+    	
+    		
+    	/**2.ESECUZIONE DELL'OPERAZIONE (MODEL).**/
+    	boolean ok = model.add(new Voto(nome, punteggio));
+    	
+    	
+    	/**3.VISUALIZZAZIONE/AGGIORNAMENTO DEL RISULTATO:**/
+    	if(ok) {
+    		List<Voto> voti = model.getVoti();
+    	
+    		txtVoti.clear();
+    		txtVoti.setText("Hai superato "+voti.size()+" esami: \n");
+    		for(Voto v : voti)
+    			txtVoti.appendText(v.toString()+"\n");
+    	
+    		txtNomeCorso.clear();
+    		cmbPunteggi.setValue(null);
+    		txtStatus.setText("");
+    	}
+    	
+    	txtStatus.setText("ERRORE: esame già presente.");
+    }
 
-	@FXML
-	void handleNuovoVoto(ActionEvent event) {
+    
+    /**METODO CHE CONSENTE DI ASSOCIARE IL MODEL ALL'ATTRIBUTO DI RIFERIMENTO:**/
+    public void setModel(Libretto model) {
+    	this.model = model; 
+    }
+    
+    
+    
+    @FXML
+    void initialize() {
+       
+    	//Inizializzazzioni di default. Inserite in automatico:
+    	assert cmbPunteggi != null : "fx:id=\"cmbPunteggi\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert txtNomeCorso != null : "fx:id=\"txtNomeCorso\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert txtStatus != null : "fx:id=\"txtStatus\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert txtVoti != null : "fx:id=\"txtVoti\" was not injected: check your FXML file 'Scene.fxml'.";
 
-		// 1. acquisizione e controllo dati
-		String nome = txtNome.getText();
-		Integer punti = cmbPunti.getValue();
-
-		// controlli di validità
-		if (nome.equals("") || punti == null) {
-			// errore, non posso eseguire l'operazione
-			txtStatus.setText("ERRORE: occorre inserire nome e voto\n");
-			return;
-		}
-
-		// 2. esecuzione dell'operazione (== chiedere al Model di farla)
-		boolean ok = model.add(new Voto(nome, punti));
-
-		// 3. visualizzazione/aggiornamento del risultato
-		if (ok) {
-			List<Voto> voti = model.getVoti();
-			txtVoti.clear();
-			txtVoti.appendText("Hai superato " + voti.size() + " esami\n");
-			for (Voto v : voti) {
-				txtVoti.appendText(v.toString() + "\n");
-			}
-
-			txtNome.clear();
-			cmbPunti.setValue(null);
-			txtStatus.setText("");
-		} else {
-			txtStatus.setText("ERRORE: esame già presente") ;
-		}
-
-	}
-
-	public void setModel(Libretto model) {
-		this.model = model;
-	}
-
-	@FXML
-	void initialize() {
-		assert cmbPunti != null : "fx:id=\"cmbPunti\" was not injected: check your FXML file 'Scene.fxml'.";
-		assert txtNome != null : "fx:id=\"txtNome\" was not injected: check your FXML file 'Scene.fxml'.";
-		assert txtVoti != null : "fx:id=\"txtVoti\" was not injected: check your FXML file 'Scene.fxml'.";
-
-		cmbPunti.getItems().clear();
-		for (int p = 18; p <= 30; p++) {
-			cmbPunti.getItems().add(p);
-		}
-
-	}
+        
+        //Inizializzazione e polamento del menù a tendina dei punteggi:
+        cmbPunteggi.getItems().clear();
+        for(int p=18; p<30; p++)
+        	cmbPunteggi.getItems().add(p);
+    }
 
 }
