@@ -1,29 +1,46 @@
 package it.polito.tdp.librettovoti.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Voto {
 	
 	//ATTRIBUTI:
-	private String nomeCorso;
+	//da copiare dalla tabella corrispondente in HeidiSQL
+	
+	private String nome;
 	private int punteggio;
+	private LocalDate data;
+	
 	
 	
 	//COSTRUTTORE:
-	public Voto(String nomeCorso, int punteggio) {
+	public Voto(String nome, int punteggio, LocalDate data) {
 		
-		this.nomeCorso = nomeCorso;
+		this.nome = nome;
 		this.punteggio = punteggio;
+		this.data = data;
 	}
+	
 	
 	
 	//METODI:
-	public String getNomeCorso() {
-		return nomeCorso;
+	
+	//Generare di default i metodi:
+	//- getter e setter 
+	//- hashCode() ed equals() *
+	//- toString()
+		
+	//*:
+	//hashCode() ed equals() della sola chiave primaria (nome), 
+	//che identifica univocamente i corsi.
+	
+	public String getNome() {
+		return nome;
 	}
 	
-	public void setNomeCorso(String n) {
-		this.nomeCorso = n;
+	public void setNome(String n) {
+		this.nome = n;
 	}
 	
 	
@@ -36,22 +53,18 @@ public class Voto {
 	}
 	
 	
-	//Metodo di stampa dei voti:
-	@Override
-	public String toString() {
-		return nomeCorso+": "+punteggio;
+	public LocalDate getData() {
+		return data;
 	}
 
-	//Metodo di confronto tra i voti:
-	//affinchè i voti possano confrontarsi, è necessario il metodo equals().
-	//Il metodo equals() però deve essere aggiunto necessariamente insieme
-	//al metodo hashCode().
-	
-	//Source -> Generate hashCode() and equals()
+	public void setData(LocalDate data) {
+		this.data = data;
+	}
+
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(nomeCorso, punteggio);
+		return Objects.hash(nome);
 	}
 
 	@Override
@@ -63,8 +76,17 @@ public class Voto {
 		if (getClass() != obj.getClass())
 			return false;
 		Voto other = (Voto) obj;
-		return Objects.equals(nomeCorso, other.nomeCorso) && punteggio == other.punteggio;
+		return Objects.equals(nome, other.nome);
 	}
+
+
+	@Override
+	public String toString() {
+		return nome+": "+punteggio+" ("+this.data.toString()+")";
+	}
+
+	
+	
 
 	
 }
